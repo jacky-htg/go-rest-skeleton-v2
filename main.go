@@ -11,6 +11,7 @@ import (
 	"rest-skeleton/pkg/config"
 	"rest-skeleton/pkg/database"
 	"rest-skeleton/pkg/logger"
+	"rest-skeleton/pkg/redis"
 	"rest-skeleton/route"
 
 	_ "github.com/lib/pq"
@@ -33,12 +34,22 @@ func main() {
 	}
 	defer db.Conn.Close()
 
+	redisClient, err := redis.NewCache(context.Background(), os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PASSWORD"), 24*time.Hour)
+	if err != nil {
+		log.Error.Fatalf("Could not connect to redis: %s\n", err)
+	}
+	defer func() {
+		if err := redisClient.Close(); err != nil {
+			log.Error.Printf("Could not close redis connection: %s\n", err)
+		}
+	}()
+
 	srv := &http.Server{
 		Addr:         ":" + os.Getenv("APP_PORT"),
 		WriteTimeout: time.Second * 5,
 		ReadTimeout:  time.Second * 5,
 		IdleTimeout:  time.Second * 30,
-		Handler:      route.InitRoute(log, db),
+		Handler:      route.InitRoute(log, db, redisClient),
 	}
 
 	go func() {

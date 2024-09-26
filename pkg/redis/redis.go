@@ -32,6 +32,14 @@ func NewCache(ctx context.Context, redisAddress string, password string, ttl tim
 	return &Cache{client: client, ttl: ttl}, nil
 }
 
+func (c *Cache) Close() error {
+	return c.client.Close()
+}
+
+func (c *Cache) Exists(ctx context.Context, key string) bool {
+	return c.client.Exists(ctx, apqPrefix+key).Val() == 1
+}
+
 // SetTTL cache
 func (c *Cache) SetTTL(ttl time.Duration) {
 	c.ttl = ttl

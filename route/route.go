@@ -5,11 +5,12 @@ import (
 	"rest-skeleton/middleware"
 	"rest-skeleton/pkg/database"
 	"rest-skeleton/pkg/logger"
+	"rest-skeleton/pkg/redis"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func InitRoute(log *logger.Logger, db *database.Database) *httprouter.Router {
+func InitRoute(log *logger.Logger, db *database.Database, cache *redis.Cache) *httprouter.Router {
 	router := httprouter.New()
 
 	var mid middleware.Middleware = middleware.Middleware{Log: log, DB: db}
@@ -21,7 +22,7 @@ func InitRoute(log *logger.Logger, db *database.Database) *httprouter.Router {
 	}
 	privateMiddlewares := append(publicMiddlewares, mid.Authentication, mid.Authorization)
 
-	userHandler := handler.Users{Log: log, DB: db}
+	userHandler := handler.Users{Log: log, DB: db, Cache: cache}
 	authHandler := handler.Auths{Log: log, DB: db}
 
 	router.POST("/login", mid.WrapMiddleware(publicMiddlewares, authHandler.Login))

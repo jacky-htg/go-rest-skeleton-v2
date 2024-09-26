@@ -2,11 +2,13 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"rest-skeleton/dto"
 	"rest-skeleton/model"
 	"rest-skeleton/pkg/database"
 	"rest-skeleton/pkg/logger"
+	"rest-skeleton/pkg/redis"
 	"rest-skeleton/repository"
 	"strconv"
 
@@ -16,8 +18,9 @@ import (
 )
 
 type Users struct {
-	Log *logger.Logger
-	DB  *database.Database
+	Log   *logger.Logger
+	DB    *database.Database
+	Cache *redis.Cache
 }
 
 func (h *Users) List(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -71,6 +74,19 @@ func (h *Users) GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		return
 	}
 
+	key := fmt.Sprintf("users.%d", id)
+	if cacheValue, isExist := h.Cache.Get(r.Context(), key); isExist {
+		response := cacheValue.(dto.UserResponse)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		if err := sonic.ConfigDefault.NewEncoder(w).Encode(response); err != nil {
+			h.Log.Error.Println(err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
 	var userRepo = repository.UserRepository{Log: h.Log, Db: h.DB.Conn}
 	userRepo.UserEntity = model.User{ID: int64(id)}
 	err = userRepo.Find(r.Context())
@@ -87,6 +103,8 @@ func (h *Users) GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
+	h.Cache.Add(r.Context(), key, response)
 }
 
 func (h *Users) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
