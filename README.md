@@ -60,6 +60,14 @@ go run main.go
 ### API Documentation
 API documentation is automatically generated and can be accessed at http://localhost:8081/swagger/doc.json.
 
+if you want to login using seed data, you can try with this payload:
+```json
+{
+    "email": "rijal.asep.nugroho@gmail.com",
+    "password": "qwertyuiop!1Q"
+}
+```
+  
 ## Folder Structure
 The folder structure is organized to follow the principles of Clean Architecture, ensuring that the application remains maintainable and scalable:
 
