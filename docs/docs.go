@@ -31,6 +31,13 @@ const docTemplate = `{
                 "operationId": "login",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Idempotency-Key",
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Login",
                         "name": "login",
                         "in": "body",
@@ -133,6 +140,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Idempotency-Key",
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Bearer token",
                         "name": "Authorization",
                         "in": "header",
@@ -228,6 +242,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Idempotency-Key",
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Bearer token",
                         "name": "Authorization",
                         "in": "header",
@@ -266,6 +287,13 @@ const docTemplate = `{
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Idempotency-Key",
+                        "name": "Idempotency-Key",
+                        "in": "header",
                         "required": true
                     },
                     {

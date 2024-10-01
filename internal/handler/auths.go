@@ -27,6 +27,7 @@ type Auths struct {
 // @Tags auth
 // @Accept  json
 // @Produce  json
+// @Param Idempotency-Key header string true "Idempotency-Key"
 // @Param login body dto.LoginRequest true "Login"
 // @Success 200 {object} dto.LoginResponse
 // @Failure 400 {string} string

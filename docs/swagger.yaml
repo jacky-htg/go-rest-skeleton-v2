@@ -52,6 +52,11 @@ paths:
       description: Login to the system
       operationId: login
       parameters:
+      - description: Idempotency-Key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
       - description: Login
         in: body
         name: login
@@ -114,6 +119,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UserCreateRequest'
+      - description: Idempotency-Key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
       - description: Bearer token
         in: header
         name: Authorization
@@ -142,6 +152,11 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Idempotency-Key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
       - description: Bearer token
         in: header
         name: Authorization
@@ -200,6 +215,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UserUpdateRequest'
+      - description: Idempotency-Key
+        in: header
+        name: Idempotency-Key
+        required: true
+        type: string
       - description: Bearer token
         in: header
         name: Authorization

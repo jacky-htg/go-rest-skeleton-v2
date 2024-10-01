@@ -132,6 +132,7 @@ func (h *Users) GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 // @Accept  json
 // @Produce  json
 // @Param user body dto.UserCreateRequest true "User to add"
+// @Param Idempotency-Key header string true "Idempotency-Key"
 // @Param Authorization header string true "Bearer token"
 // @Success 201 {object} dto.UserResponse
 // @Router /users [post]
@@ -195,6 +196,7 @@ func (h *Users) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 // @Produce  json
 // @Param id path int true "User ID"
 // @Param user body dto.UserUpdateRequest true "User to update"
+// @Param Idempotency-Key header string true "Idempotency-Key"
 // @Param Authorization header string true "Bearer token"
 // @Success 200 {object} dto.UserResponse
 // @Router /users/{id} [put]
@@ -260,6 +262,7 @@ func (h *Users) Update(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 // @Accept  json
 // @Produce  json
 // @Param id path int true "User ID"
+// @Param Idempotency-Key header string true "Idempotency-Key"
 // @Param Authorization header string true "Bearer token"
 // @Success 204
 // @Router /users/{id} [delete]
