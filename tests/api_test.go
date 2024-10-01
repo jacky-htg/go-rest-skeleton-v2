@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"rest-skeleton/pkg/database"
-	"rest-skeleton/pkg/migration"
-	"rest-skeleton/pkg/redis"
+	"rest-skeleton/internal/pkg/database"
+	"rest-skeleton/internal/pkg/migration"
+	"rest-skeleton/internal/pkg/redis"
 	"sync"
 	"time"
 

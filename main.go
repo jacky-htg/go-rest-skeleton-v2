@@ -9,12 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	"rest-skeleton/pkg/config"
-	"rest-skeleton/pkg/database"
-	"rest-skeleton/pkg/logger"
-	"rest-skeleton/pkg/redis"
-	"rest-skeleton/pkg/telemetry"
-	"rest-skeleton/route"
+	"rest-skeleton/internal/pkg/config"
+	"rest-skeleton/internal/pkg/database"
+	"rest-skeleton/internal/pkg/logger"
+	"rest-skeleton/internal/pkg/redis"
+	"rest-skeleton/internal/pkg/telemetry"
+	"rest-skeleton/internal/route"
 
 	_ "github.com/lib/pq"
 )

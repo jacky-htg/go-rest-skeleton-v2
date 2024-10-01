@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"rest-skeleton/pkg/config"
-	"rest-skeleton/pkg/database"
-	"rest-skeleton/pkg/migration"
+	"rest-skeleton/internal/pkg/config"
+	"rest-skeleton/internal/pkg/database"
+	"rest-skeleton/internal/pkg/migration"
 
 	_ "github.com/lib/pq"
 )
