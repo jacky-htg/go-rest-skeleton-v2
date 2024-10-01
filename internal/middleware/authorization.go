@@ -21,7 +21,7 @@ func (m *Middleware) Authorization(next httprouter.Handle) httprouter.Handle {
 		ctx := context.WithValue(r.Context(), myctx.Key("path"), path)
 		r = r.WithContext(ctx)
 
-		authRepository := repository.AuthRepository{Db: m.DB.Conn, Log: m.Log}
+		authRepository := repository.AuthRepository{Db: m.DB, Log: m.Log}
 		hasAuth, err := authRepository.HasAuth(r.Context(), r.Method+" "+path)
 		if err != nil && err != sql.ErrNoRows {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)

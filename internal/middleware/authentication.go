@@ -34,7 +34,7 @@ func (m *Middleware) Authentication(next httprouter.Handle) httprouter.Handle {
 			return
 		}
 
-		userRepo := repository.UserRepository{Log: m.Log, Db: m.DB.Conn, UserEntity: model.User{Email: email}}
+		userRepo := repository.UserRepository{Log: m.Log, Db: m.DB, UserEntity: model.User{Email: email}}
 		if err := userRepo.GetByEmail(r.Context()); err != nil && err != sql.ErrNoRows {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return

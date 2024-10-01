@@ -91,6 +91,10 @@ func NewPosgrest() (*sql.DB, func()) {
 		fmt.Println(pingError)
 	}
 
+	dbTeardown := func() {
+		database.StopPostgresContainer()
+	}
+
 	return dbInstance, dbTeardown
 }
 

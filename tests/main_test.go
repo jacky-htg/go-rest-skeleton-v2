@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -10,21 +11,28 @@ import (
 	"os"
 	"path/filepath"
 	"rest-skeleton/internal/handler"
+	"rest-skeleton/internal/middleware"
 	"rest-skeleton/internal/pkg/config"
 	"rest-skeleton/internal/pkg/logger"
 	"rest-skeleton/internal/pkg/redis"
+	"rest-skeleton/internal/pkg/telemetry"
 	"testing"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"go.opentelemetry.io/otel/metric"
 )
 
 var (
-	db    *sql.DB
-	cache *redis.Cache
-	done  func()
-	log   *logger.Logger
-	token string
+	db                 *sql.DB
+	cache              *redis.Cache
+	done               func()
+	log                *logger.Logger
+	token              string
+	meter              metric.Meter
+	publicMiddlewares  []func(httprouter.Handle) httprouter.Handle
+	privateMiddlewares []func(httprouter.Handle) httprouter.Handle
+	mid                middleware.Middleware
 )
 
 func TestMain(m *testing.M) {
@@ -53,6 +61,26 @@ func TestMain(m *testing.M) {
 		return
 	}
 
+	meter, err = telemetry.NewMeter(context.Background())
+	if err != nil {
+		fmt.Println("failed to create meter", err)
+		os.Exit(1)
+	}
+
+	shutdown, err := telemetry.InitTracing()
+	if err != nil {
+		fmt.Printf("failed to initialize tracing: %v", err)
+		os.Exit(1)
+	}
+	defer shutdown(context.Background())
+
+	latencyMetric, errorCountMetric, err := telemetry.SetMetric(meter)
+	if err != nil {
+		fmt.Printf("failed to initialize metrics: %v", err)
+		os.Exit(1)
+	}
+	log.ErrorCountMetric = errorCountMetric
+
 	db, cache, done = NewUnit()
 	defer done()
 
@@ -62,6 +90,17 @@ func TestMain(m *testing.M) {
 		}
 		done()
 	}()
+
+	mid = middleware.Middleware{Log: log, DB: db, Cache: cache, LatencyMetric: latencyMetric}
+	publicMiddlewares = []func(httprouter.Handle) httprouter.Handle{
+		mid.TraceAndMetricLatency,
+		mid.CORS,
+		mid.PanicRecovery,
+		mid.Semaphore,
+		mid.RateLimit,
+		mid.Idempotency,
+	}
+	privateMiddlewares = append(publicMiddlewares, mid.Authentication, mid.Authorization)
 
 	err = login(log, db)
 	if err != nil {
@@ -94,11 +133,12 @@ func login(log *logger.Logger, db *sql.DB) error {
 		return fmt.Errorf("could not create login request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Idempotency-Key", "6b34d72b-2b1d-42ab-ad43-89ecd9312441")
 
 	rr := httptest.NewRecorder()
 	router := httprouter.New()
 	authHandler := handler.Auths{DB: db, Log: log}
-	router.POST("/login", authHandler.Login)
+	router.POST("/login", mid.WrapMiddleware(publicMiddlewares, authHandler.Login))
 
 	router.ServeHTTP(rr, req)
 

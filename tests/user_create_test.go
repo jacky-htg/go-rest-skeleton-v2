@@ -13,14 +13,16 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 )
 
 type UserCreateScenario struct {
-	Name        string
-	Data        dto.UserCreateRequest
-	ExpectedErr string
-	StatusCode  int
+	Name           string
+	Data           dto.UserCreateRequest
+	ExpectedErr    string
+	StatusCode     int
+	IdempotencyKey string
 }
 
 func getScenarios() []UserCreateScenario {
@@ -33,8 +35,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "password123",
 				RePassword: "password123",
 			},
-			ExpectedErr: "Invalid input: name is required",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: name is required",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Invalid Email",
@@ -44,8 +47,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "password123",
 				RePassword: "password123",
 			},
-			ExpectedErr: "Invalid input: email is required",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: email is required",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Invalid Password",
@@ -55,8 +59,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "",
 				RePassword: "password123",
 			},
-			ExpectedErr: "Invalid input: password is required",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: password is required",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Invalid Re-Password",
@@ -66,8 +71,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "Password123!",
 				RePassword: "",
 			},
-			ExpectedErr: "Invalid input: re_password is required",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: re_password is required",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Invalid Name",
@@ -77,8 +83,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "password123",
 				RePassword: "password123",
 			},
-			ExpectedErr: "Invalid input: name is required",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: name is required",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Invalid Weak Password",
@@ -88,8 +95,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "password123",
 				RePassword: "password123",
 			},
-			ExpectedErr: "Invalid input: password harus mengandung 1 huruf besar",
-			StatusCode:  http.StatusBadRequest,
+			ExpectedErr:    "Invalid input: password harus mengandung 1 huruf besar",
+			StatusCode:     http.StatusBadRequest,
+			IdempotencyKey: uuid.NewString(),
 		},
 		{
 			Name: "Valid User",
@@ -99,8 +107,9 @@ func getScenarios() []UserCreateScenario {
 				Password:   "Password123!",
 				RePassword: "Password123!",
 			},
-			ExpectedErr: "",
-			StatusCode:  http.StatusCreated,
+			ExpectedErr:    "",
+			StatusCode:     http.StatusCreated,
+			IdempotencyKey: uuid.NewString(),
 		},
 	}
 }
@@ -109,17 +118,18 @@ func TestCreateUser(t *testing.T) {
 	userHandler := handler.Users{DB: db, Log: log, Cache: cache}
 
 	router := httprouter.New()
-	router.POST("/users", userHandler.Create)
+	router.POST("/users", mid.WrapMiddleware(publicMiddlewares, userHandler.Create))
 
 	scenarios := getScenarios()
 	var wg sync.WaitGroup
 	for _, tt := range scenarios {
 		wg.Add(1)
 		go func(tt struct {
-			Name        string
-			Data        dto.UserCreateRequest
-			ExpectedErr string
-			StatusCode  int
+			Name           string
+			Data           dto.UserCreateRequest
+			ExpectedErr    string
+			StatusCode     int
+			IdempotencyKey string
 		}) {
 			defer wg.Done()
 			t.Run(tt.Name, func(t *testing.T) {
@@ -132,10 +142,14 @@ func TestCreateUser(t *testing.T) {
 					t.Errorf("could not create request: %v", err)
 				}
 				ctx := context.WithValue(req.Context(), myctx.Key("user_id"), int64(425071490427828))
+				//ctx = context.WithValue(ctx, myctx.Key("traceID"), "29c92c0f-b95e-458e-b23c-09eb5058e83b")
+
 				req = req.WithContext(ctx)
 
 				req.Header.Set("Content-Type", "application/json")
 				req.Header.Set("Authorization", "Bearer "+token)
+				req.Header.Set("Idempotency-Key", tt.IdempotencyKey)
+
 				rr := httptest.NewRecorder()
 				router.ServeHTTP(rr, req)
 				status := rr.Code

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"rest-skeleton/internal/pkg/database"
+	"database/sql"
 	"rest-skeleton/internal/pkg/logger"
 	"rest-skeleton/internal/pkg/redis"
 
@@ -11,7 +11,7 @@ import (
 
 type Middleware struct {
 	Log           *logger.Logger
-	DB            *database.Database
+	DB            *sql.DB
 	Cache         *redis.Cache
 	LatencyMetric metric.Int64Histogram
 }
