@@ -24,7 +24,7 @@ A robust and scalable RESTful API skeleton built with Go, featuring essential to
 - Common Golang Metrics with Prometheus: Utilize Prometheus for golang server metrics.
 - Idempotent Request Handling: (To be implemented) Ensure repeated requests yield the same result.
 - Docker Support: Pre-configured Dockerfile for easy deployment.
-- CI/CD Integration with GitHub Actions: (To be implemented) Streamline your deployment process.
+- CI/CD Integration with GitHub Actions: Streamline your deployment process.
 - Example CRUD Operations: Included examples for user management and authentication.
 
 ## Getting Started
