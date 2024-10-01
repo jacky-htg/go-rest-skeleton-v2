@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"rest-skeleton/pkg/logger"
 )
 
@@ -17,13 +16,9 @@ func (r *AuthRepository) HasAuth(ctx context.Context, path string) (bool, error)
 
 	switch ctx.Err() {
 	case context.Canceled:
-		err := errors.New("request is canceled")
-		r.Log.Error.Println(err)
-		return hasAuth, err
+		return hasAuth, r.Log.Error(ctx, context.Canceled)
 	case context.DeadlineExceeded:
-		err := errors.New("deadline is exceeded")
-		r.Log.Error.Println(err)
-		return hasAuth, err
+		return hasAuth, r.Log.Error(ctx, context.DeadlineExceeded)
 	default:
 	}
 
@@ -38,15 +33,13 @@ func (r *AuthRepository) HasAuth(ctx context.Context, path string) (bool, error)
 
 	stmt, err := r.Db.PrepareContext(ctx, q)
 	if err != nil {
-		r.Log.Error.Println("error get users", err)
-		return hasAuth, err
+		return hasAuth, r.Log.Error(ctx, err)
 	}
 	defer stmt.Close()
 
 	err = stmt.QueryRowContext(ctx, path).Scan(&hasAuth)
 	if err != nil {
-		r.Log.Error.Println("error get users", err)
-		return hasAuth, err
+		return hasAuth, r.Log.Error(ctx, err)
 	}
 
 	return hasAuth, nil

@@ -2,29 +2,49 @@ package handler
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
+	"os"
 	"rest-skeleton/dto"
-	"rest-skeleton/pkg/database"
 	"rest-skeleton/pkg/logger"
 	"rest-skeleton/usecase"
 
 	"github.com/bytedance/sonic"
 	"github.com/julienschmidt/httprouter"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type Auths struct {
 	Log *logger.Logger
-	DB  *database.Database
+	DB  *sql.DB
 }
 
+// @Summary Login
+// @Description Login to the system
+// @host   localhost:8081
+// @ID login
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param login body dto.LoginRequest true "Login"
+// @Success 200 {object} dto.LoginResponse
+// @Failure 400 {string} string
+// @Failure 401 {string} string
+// @Failure 500 {string} string
+// @Router /login [post]
 func (h *Auths) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	switch r.Context().Err() {
+	ctx := r.Context()
+	ctx, span := otel.Tracer(os.Getenv("APP_NAME")).Start(ctx, "LoginHandler")
+	defer span.End()
+
+	switch ctx.Err() {
 	case context.Canceled:
-		h.Log.Error.Println("Request is canceled")
+		h.Log.Error(ctx, context.Canceled)
 		http.Error(w, "Request is canceled", http.StatusExpectationFailed)
 		return
 	case context.DeadlineExceeded:
-		h.Log.Error.Println("deadline is exceeded")
+		h.Log.Error(ctx, context.DeadlineExceeded)
 		http.Error(w, "Deadline is exceeded", http.StatusExpectationFailed)
 		return
 	default:
@@ -35,11 +55,14 @@ func (h *Auths) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	defer r.Body.Close()
 	err := sonic.ConfigDefault.NewDecoder(r.Body).Decode(&loginRequest)
 	if err != nil {
+		h.Log.Error(ctx, err)
 		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
 		return
 	}
 
+	span.SetAttributes(attribute.String("email", loginRequest.Email))
 	if err := loginRequest.Validate(); err != nil {
+		h.Log.Error(ctx, err)
 		http.Error(w, "Invalid input: "+err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -58,7 +81,7 @@ func (h *Auths) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := sonic.ConfigDefault.NewEncoder(w).Encode(response); err != nil {
-		h.Log.Error.Println(err)
+		h.Log.Error(ctx, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

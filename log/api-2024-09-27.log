@@ -1,0 +1,17 @@
+{"timestamp":"2024-09-27 11:26:32","level":"INFO","message":"Starting Server at : 8081","file":"logger.go","line":46,"context":""}
+{"timestamp":"2024-09-27 11:29:25","level":"INFO","message":"Shutdown Server ...","file":"logger.go","line":46,"context":""}
+{"timestamp":"2024-09-27 11:29:25","level":"INFO","message":"Server exiting","file":"logger.go","line":46,"context":""}
+{"timestamp":"2024-09-27 11:29:31","level":"INFO","message":"Starting Server at : 8081","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27 11:30:30","level":"INFO","message":"Shutdown Server ...","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27 11:30:30","level":"INFO","message":"Server exiting","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T11:30:35","level":"INFO","message":"Starting Server at : 8081","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T11:31:39","level":"INFO","message":"Shutdown Server ...","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T11:31:39","level":"INFO","message":"Server exiting","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T11:31:44Z","level":"INFO","message":"Starting Server at : 8081","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T15:01:43Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"logger.go","line":37,"context":"error get users"}
+{"timestamp":"2024-09-27T15:02:05Z","level":"INFO","message":"Shutdown Server ...","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T15:02:05Z","level":"INFO","message":"Server exiting","file":"logger.go","line":46,"context":null}
+{"timestamp":"2024-09-27T15:02:10Z","level":"INFO","message":"Starting Server at : 8081","file":"main.go","line":40,"context":null}
+{"timestamp":"2024-09-27T15:02:12Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"error get users"}
+{"timestamp":"2024-09-27T15:25:09Z","level":"INFO","message":"Shutdown Server ...","file":"main.go","line":75,"context":null}
+{"timestamp":"2024-09-27T15:25:09Z","level":"INFO","message":"Server exiting","file":"main.go","line":83,"context":null}

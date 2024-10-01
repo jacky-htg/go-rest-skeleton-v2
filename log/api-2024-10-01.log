@@ -1,0 +1,3 @@
+{"timestamp":"2024-10-01T04:29:09Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"4bfe058d499c3017198a3ab4e569d140"}
+{"timestamp":"2024-10-01T05:52:05Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":36,"context":"1490d81e1cca8eb7be8963954874380c"}
+{"timestamp":"2024-10-01T05:58:11Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":36,"context":"67246e8a0192386a56f28158ff6ff4bb"}

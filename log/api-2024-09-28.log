@@ -1,0 +1,9 @@
+{"timestamp":"2024-09-28T12:14:37Z","level":"INFO","message":"Starting Server at : 8081","file":"main.go","line":41,"context":null}
+{"timestamp":"2024-09-28T12:17:21Z","level":"INFO","message":"Shutdown Server ...","file":"main.go","line":89,"context":null}
+{"timestamp":"2024-09-28T12:17:21Z","level":"INFO","message":"Server exiting","file":"main.go","line":97,"context":null}
+{"timestamp":"2024-09-28T12:17:27Z","level":"INFO","message":"Starting Server at : 8081","file":"main.go","line":41,"context":null}
+{"timestamp":"2024-09-28T12:18:04Z","level":"INFO","message":"Shutdown Server ...","file":"main.go","line":89,"context":null}
+{"timestamp":"2024-09-28T12:18:04Z","level":"INFO","message":"Server exiting","file":"main.go","line":97,"context":null}
+{"timestamp":"2024-09-28T12:18:09Z","level":"INFO","message":"Starting Server at : 8081","file":"main.go","line":41,"context":null}
+{"timestamp":"2024-09-28T12:27:26Z","level":"INFO","message":"Shutdown Server ...","file":"main.go","line":89,"context":null}
+{"timestamp":"2024-09-28T12:27:26Z","level":"INFO","message":"Server exiting","file":"main.go","line":97,"context":null}

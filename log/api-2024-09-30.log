@@ -1,0 +1,11 @@
+{"timestamp":"2024-09-30T08:02:00Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":""}
+{"timestamp":"2024-09-30T08:05:32Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":""}
+{"timestamp":"2024-09-30T08:09:08Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":""}
+{"timestamp":"2024-09-30T08:26:44Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"1a14f02cb7c5d0fac64a56250bc722e7"}
+{"timestamp":"2024-09-30T08:46:45Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"0839cbe6147655c7ca1b8f1cdb29bd90"}
+{"timestamp":"2024-09-30T10:17:15Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"ec6a50d59649f35f4d2007f91b51ea2f"}
+{"timestamp":"2024-09-30T10:28:40Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"613578fbac374ab77ef45da8d6be3e3f"}
+{"timestamp":"2024-09-30T10:28:54Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"7d9aee31b488ebe1e63de5ddc1566e6f"}
+{"timestamp":"2024-09-30T10:31:56Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"08eedd8f5a39344a3608951ed5d94da5"}
+{"timestamp":"2024-09-30T10:34:31Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"0bdef513c542f4a1a3f3bccfe30b8df1"}
+{"timestamp":"2024-09-30T10:44:06Z","level":"ERROR","message":"pq: column \"ids\" does not exist","file":"user_repository.go","line":32,"context":"fdfc75fab9f10655066c58e0d4bb6c90"}

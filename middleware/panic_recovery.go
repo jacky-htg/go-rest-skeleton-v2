@@ -21,7 +21,8 @@ func (m *Middleware) PanicRecovery(next httprouter.Handle) httprouter.Handle {
 					}
 					stack.WriteString(fmt.Sprintf("  %s:%d\n", file, line))
 				}
-				m.Log.Error.Printf("panic: %v\n%s", err, stack.String())
+
+				m.Log.Error(r.Context(), fmt.Errorf("%v\n panic: %s", err, stack.String()))
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
 		}()

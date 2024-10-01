@@ -6,7 +6,7 @@
 - [X] Authentication using JWT Token
 - [X] Authorization RBAC
 - [X] Dependency Injection Pattern
-- [X] Logger for Error and Info
+- [X] Structured Logger for Error and Info
 - [X] Option Env using OS Environtment or file .env
 - [X] Cache using Redis
 - [X] Gracefull Shutdown
@@ -14,9 +14,14 @@
 - [X] Clean Architecture
 - [X] Panic Recovery Handling
 - [X] Handling Context Error (Timeout and Cancelled)
-- [ ] API Testing
-- [ ] Api Documentation using Swagger
-- [ ] Monitoring, Observability & Audit Log
-- [ ] Open Telemetri
+- [X] Migrations Database
+- [X] API Testing
+- [X] Api Documentation using Swagger
+- [X] Log Monitoring using Loki
+- [X] Tracing using Open Telemetri, otel-collector, and jaeger
+- [X] Matric business application using Open Telemetri, otel-collector, and prometheus
+- [X] Common Matric for golang server using prometheus
 - [ ] Handling Idempoten Request
+- [X] Dockerfile
+- [ ] CI/CD using Github Action
 - [X] Example CRUD users and login

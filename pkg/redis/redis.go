@@ -32,6 +32,10 @@ func NewCache(ctx context.Context, redisAddress string, password string, ttl tim
 	return &Cache{client: client, ttl: ttl}, nil
 }
 
+func NewCacheWithClient(ctx context.Context, client *redis.Client, ttl time.Duration) *Cache {
+	return &Cache{client: client, ttl: ttl}
+}
+
 func (c *Cache) Close() error {
 	return c.client.Close()
 }

@@ -14,7 +14,7 @@ func (m *Middleware) Semaphore(next httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		maxConcurrentRequests, err := strconv.Atoi(os.Getenv("CONCURRENCY_LIMIT"))
 		if err != nil {
-			m.Log.Error.Println(err)
+			m.Log.Error(r.Context(), err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 		sem := make(chan struct{}, maxConcurrentRequests) // Create a semaphore with a maximum capacity

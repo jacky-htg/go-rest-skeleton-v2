@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"strconv"
@@ -55,20 +56,20 @@ func (m *Middleware) RateLimit(next httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		rps, err := strconv.Atoi(os.Getenv("RATE_LIMIT_RPS"))
 		if err != nil {
-			m.Log.Error.Println(err)
+			m.Log.Error(r.Context(), err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 
 		burst, err := strconv.Atoi(os.Getenv("RATE_LIMIT_BURST"))
 		if err != nil {
-			m.Log.Error.Println(err)
+			m.Log.Error(r.Context(), err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 
 		limiter := NewRateLimiter(rps, (burst * rps))
 
 		if !limiter.Allow() {
-			m.Log.Error.Println("Too Many Requests")
+			m.Log.Error(r.Context(), errors.New("too many requests"))
 			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 			return
 		}

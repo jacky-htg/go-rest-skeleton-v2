@@ -1,6 +1,10 @@
 package route
 
 import (
+	"fmt"
+	"net/http"
+	"os"
+	_ "rest-skeleton/docs"
 	"rest-skeleton/handler"
 	"rest-skeleton/middleware"
 	"rest-skeleton/pkg/database"
@@ -8,22 +12,33 @@ import (
 	"rest-skeleton/pkg/redis"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"go.opentelemetry.io/otel/metric"
 )
 
-func InitRoute(log *logger.Logger, db *database.Database, cache *redis.Cache) *httprouter.Router {
+func ApiRoute(log *logger.Logger, db *database.Database, cache *redis.Cache, latencyMetric metric.Int64Histogram) *httprouter.Router {
 	router := httprouter.New()
+	router.ServeFiles("/docs/*filepath", http.Dir("./docs"))
 
-	var mid middleware.Middleware = middleware.Middleware{Log: log, DB: db}
+	swaggerHandler := httpSwagger.Handler(
+		httpSwagger.URL(fmt.Sprintf("%s:%s/docs/swagger.json", os.Getenv("APP_HOST"), os.Getenv("APP_PORT"))),
+	)
+	router.Handler("GET", "/swagger/*filepath", swaggerHandler)
+	router.Handler("GET", "/metrics", promhttp.Handler())
+
+	var mid middleware.Middleware = middleware.Middleware{Log: log, DB: db, LatencyMetric: latencyMetric}
 	publicMiddlewares := []func(httprouter.Handle) httprouter.Handle{
-		mid.PanicRecovery,
+		mid.TraceAndMetricLatency,
 		mid.CORS,
+		mid.PanicRecovery,
 		mid.Semaphore,
 		mid.RateLimit,
 	}
 	privateMiddlewares := append(publicMiddlewares, mid.Authentication, mid.Authorization)
 
-	userHandler := handler.Users{Log: log, DB: db, Cache: cache}
-	authHandler := handler.Auths{Log: log, DB: db}
+	userHandler := handler.Users{Log: log, DB: db.Conn, Cache: cache}
+	authHandler := handler.Auths{Log: log, DB: db.Conn}
 
 	router.POST("/login", mid.WrapMiddleware(publicMiddlewares, authHandler.Login))
 	router.GET("/users", mid.WrapMiddleware(privateMiddlewares, userHandler.List))
