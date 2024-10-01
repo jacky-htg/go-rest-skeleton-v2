@@ -27,13 +27,14 @@ func ApiRoute(log *logger.Logger, db *database.Database, cache *redis.Cache, lat
 	router.Handler("GET", "/swagger/*filepath", swaggerHandler)
 	router.Handler("GET", "/metrics", promhttp.Handler())
 
-	var mid middleware.Middleware = middleware.Middleware{Log: log, DB: db, LatencyMetric: latencyMetric}
+	var mid middleware.Middleware = middleware.Middleware{Log: log, DB: db, Cache: cache, LatencyMetric: latencyMetric}
 	publicMiddlewares := []func(httprouter.Handle) httprouter.Handle{
 		mid.TraceAndMetricLatency,
 		mid.CORS,
 		mid.PanicRecovery,
 		mid.Semaphore,
 		mid.RateLimit,
+		mid.Idempotency,
 	}
 	privateMiddlewares := append(publicMiddlewares, mid.Authentication, mid.Authorization)
 

@@ -22,7 +22,7 @@ A robust and scalable RESTful API skeleton built with Go, featuring essential to
 - Tracing with OpenTelemetry: Track and analyze performance with Jaeger and otel-collector.
 - Business Metrics with OpenTelemetry: Collect metrics relevant to business logic.
 - Common Golang Metrics with Prometheus: Utilize Prometheus for golang server metrics.
-- Idempotent Request Handling: (To be implemented) Ensure repeated requests yield the same result.
+- Idempotent Request Handling: Ensure repeated requests yield the same result.
 - Docker Support: Pre-configured Dockerfile for easy deployment.
 - CI/CD Integration with GitHub Actions: Streamline your deployment process.
 - Example CRUD Operations: Included examples for user management and authentication.
@@ -49,7 +49,9 @@ go mod tidy
 
 3. Create a .env file or set environment variables based on the provided configuration template.
 
-4. Run the application:
+4. run `cd docker && docker-compose up -d` to running monitoring tools.
+
+5. Run the application: From your root app directory, run the command:
 
 ```bash
 go run main.go
