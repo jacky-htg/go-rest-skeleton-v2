@@ -33,7 +33,7 @@ func (u *UserRepository) Find(ctx context.Context) error {
 	default:
 	}
 
-	const q = `SELECT ids, name, email, password FROM users WHERE id=$1 AND deleted_at IS NULL`
+	const q = `SELECT id, name, email, password FROM users WHERE id=$1 AND deleted_at IS NULL`
 	span.SetAttributes(attribute.String("db.query", q))
 	span.SetAttributes(attribute.Int64("db.id", u.UserEntity.ID))
 
